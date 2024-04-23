@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
                       Padding(
                         padding: const EdgeInsets.only(left: 30),
                         child: Text(
-                          '02:35 PM',
+                          '02:35 AM',
                           style: TextStyle(color: Colors.white, fontSize: 25),
                         ),
                       )
