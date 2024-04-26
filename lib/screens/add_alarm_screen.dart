@@ -1,6 +1,5 @@
-import 'package:flutter/cupertino.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:numberpicker/numberpicker.dart';
 
 class AddAlarmScreen extends StatefulWidget {
@@ -11,9 +10,14 @@ class AddAlarmScreen extends StatefulWidget {
 }
 
 class _AddAlarmScreenState extends State<AddAlarmScreen> {
-  var hour = 0;
+  var hours = 0;
   var minutes = 0;
   var timeFormate = 'AM';
+  bool isAlarmOn = true;
+  String dropDownRingtoneValue = 'Future.mp3';
+  final String ringtonePath = 'ringtones/';
+  final audioPlayer = AudioPlayer();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,14 +46,14 @@ class _AddAlarmScreenState extends State<AddAlarmScreen> {
                         NumberPicker(
                           minValue: 0,
                           maxValue: 12,
-                          value: hour,
+                          value: hours,
                           zeroPad: true,
                           infiniteLoop: true,
                           itemWidth: 80,
                           itemHeight: 60,
                           onChanged: (value) {
                             setState(() {
-                              hour = value;
+                              hours = value;
                             });
                           },
                           textStyle:
@@ -145,7 +149,10 @@ class _AddAlarmScreenState extends State<AddAlarmScreen> {
                     height: 20,
                   ),
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      // playRingtone();
+                      // stopRingtone();
+                    },
                     child: Container(
                       height: 50,
                       width: double.infinity,
@@ -153,24 +160,71 @@ class _AddAlarmScreenState extends State<AddAlarmScreen> {
                         border: Border.all(),
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      child: Center(child: Text('Select ringtone')),
+                      child: Center(
+                          child: DropdownButtonHideUnderline(
+                              child: DropdownButton<String>(
+                        value: dropDownRingtoneValue,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            dropDownRingtoneValue = newValue!;
+                            print(dropDownRingtoneValue);
+                          });
+                        },
+                        items: [
+                          DropdownMenuItem<String>(
+                            value: 'Future.mp3',
+                            child: Text('Future'),
+                          ),
+                          DropdownMenuItem<String>(
+                            value: 'Journey.mp3',
+                            child: Text('Journey'),
+                          ),
+                          DropdownMenuItem<String>(
+                            value: 'Spark.mp3',
+                            child: Text('Spark'),
+                          ),
+                          DropdownMenuItem<String>(
+                            value: 'Inspirational.mp3',
+                            child: Text('Inspirational'),
+                          ),
+                        ],
+                      ))),
                     ),
                   ),
                 ],
               ),
             ),
-            Container(
-              height: 50,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.green,
-                borderRadius: BorderRadius.circular(30),
+            InkWell(
+              onTap: () {
+                print(hours);
+                print(minutes);
+                print(timeFormate);
+                print(isAlarmOn);
+                print(ringtonePath + dropDownRingtoneValue);
+                Navigator.pop(context);
+              },
+              child: Container(
+                height: 50,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.green,
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Center(child: Text('Save')),
               ),
-              child: Center(child: Text('Save')),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> playRingtone() async {
+    String path = ringtonePath + dropDownRingtoneValue;
+    await audioPlayer.play(AssetSource(path));
+  }
+
+  Future<void> stopRingtone() async {
+    await audioPlayer.stop();
   }
 }
